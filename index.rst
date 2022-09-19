@@ -4,7 +4,48 @@ This is the documentation file for the Mobot project, it contains 5 modules in t
 
 train
 ----------------------------------
-``train.py``
+``train.py``This file contains the functions for the model training, set the metadata which is the dataset will be used for train and validate your self before do the training please.
+
+ARGS: 
+    The model parameters for setup should give to the train functions.
+    parameters:
+        MODEL_DIR         : the directory path which stores the model which you start the training with, if None it will start with a pretrained model.
+        
+        OUTPUT_DIR        : the directory path which you wan to store the train results.
+        
+        BASE_LR           : the basic learning rate when you didn't set any learning rate strategy, if use the strategy, then this parameter won't work.
+        
+        MAX_ITER          : the training will start with the iteration which the start model last time end with, the MAX_ITER will be how many iterations this training.
+        
+        CHECKPOINT_PERIOD : how many iterations it save the model as a CHECKPOINT, should be same to the EVAL_PERIOD for choosing the best model.
+        
+        EVAL_PERIOD       : how many iterations it do the valiadation, should be same to the CHECKPOINT_PERIOD for choosing the best model.
+        
+        MODEL_CKPT        : the model checkpoint's file name (eg. model_0010499.pth --> use model_0010499).
+        
+        BACKBONE          : the BACKBONE we are using, default value is "COCO-InstanceSegmentation/mask_rcnn_R_101_FPN_3x.yaml" .
+        
+        resume            : resume the last time training or not, default False.
+
+train(args,score_file_name,lr_strategy,min_lr,max_lr,Aug,Train_Set,Test_Set): 
+    Do the training
+    parameters:
+        args            : the ARGS object for training, declare by train.ARGS().
+        
+        score_file_name : the npy file's name which will be saved in output dir contain the score list, default {}.npy.
+        
+        lr_strategy     : if 1 use gen_lr_list_1, if 2 use gen_lr_list_2, if 3 use gen_lr_list_choosing_lr(plz meanwhile set a small CHECKPOINT_PERIOD and EVAL_PERIOD), if None use the BASE_LR and detectron2's default warmup scheduler.
+        
+        min_lr          : if use learning rate strategy, otherwise set it to None.
+        
+        max_lr          : if use learning rate strategy, otherwise set it to None.
+        
+        Aug             : set True to open the Augmentation we defined.
+        
+        Train_Set       : should be defined with detectron2.data.MetadataCatalog.get() function which contain the at least json_file and image_root informations for the training set.
+        
+        Test_Set        : should be defined with detectron2.data.MetadataCatalog.get() function which contain the at least json_file and image_root informations for the validation set.
+
 
 test
 ----------------------------------
@@ -15,15 +56,15 @@ ARGS:
     The model parameters for setup should give to the test functions.
     
     parameters:
-        MODEL_DIR         : the directory path which stores the model
+        MODEL_DIR         : the directory path which stores the model.
         
-        OUTPUT_DIR        : the directory path which you wan to store the test result 
+        OUTPUT_DIR        : the directory path which you wan to store the test result.
         
-        MODEL_CKPT        : the model checkpoint's file name (eg. model_0010499.pth --> use model_0010499)
+        MODEL_CKPT        : the model checkpoint's file name (eg. model_0010499.pth --> use model_0010499).
         
-        BACKBONE          : the BACKBONE we are using, default value is "COCO-InstanceSegmentation/mask_rcnn_R_101_FPN_3x.yaml" 
+        BACKBONE          : the BACKBONE we are using, default value is "COCO-InstanceSegmentation/mask_rcnn_R_101_FPN_3x.yaml".
         
-        SCORE_THRESH_TEST : the prediction with a confidence score above the threshold value is kept, and the remaining are discarded, 0.7 by default
+        SCORE_THRESH_TEST : the prediction with a confidence score above the threshold value is kept, and the remaining are discarded, 0.7 by default.
 
 setup(args): 
     It will config the model using the given parameters in the ARGS object. If there the MODEL_DIR exists or was given but MODEL_CKPT doesn't exists or given, then it     will use the final model in the MODEL_DIR.If neither the MODEL_DIR nor MODEL_CKPT exists or was given then it will use the pretrained model with the given backbone
@@ -38,17 +79,17 @@ test(args,metadata):
     Do the test use the given model (args) on the given dataset (metadata), will return a score_list contain the scores results.
     
     parameters:
-        args    : the ARGS object
+        args    : the ARGS object.
         
-        metadata: should be defined with detectron2.data.MetadataCatalog.get() function which contain the at least json_file and image_root informations
+        metadata: should be defined with detectron2.data.MetadataCatalog.get() function which contain the at least json_file and image_root informations.
 
 test_candidate(metadata,candidate_dir): 
     The function will read the .pth file in the candidate_dir (default:best_model/candidate_model) folder automatically, and use the given dataset in metadata to get the result score, it will return a score list, also show the score table, when the model path is complex then this function can not work maybe, then define your owns model pred iteration please.
     
     parameters:
-        metadata     : should be defined with detectron2.data.MetadataCatalog.get() function which contain the at least json_file and image_root informations
+        metadata     : should be defined with detectron2.data.MetadataCatalog.get() function which contain the at least json_file and image_root informations.
         
-        candidate_dir: the path which all models in it are the candidate models you want to test
+        candidate_dir: the path which all models in it are the candidate models you want to test.
 
 prediction
 ----------------------------------
@@ -59,32 +100,32 @@ ARGS:
     Arguments for setting up the model.
      
     parameters:
-        MODEL_DIR        : the folder under the current path which store the best model, I will always upload the best model in this folder
+        MODEL_DIR        : the folder under the current path which store the best model, I will always upload the best model in this folder.
         
-        MODEL_CKPT       : the model's name which was named by its checkpoints, in the best_model folder, the model is eg. model_0012499.pth
+        MODEL_CKPT       : the model's name which was named by its checkpoints, in the best_model folder, the model is eg. model_0012499.pth.
         
-        BACKBONE         : We are using the Mask_RCNN 101 by default
+        BACKBONE         : We are using the Mask_RCNN 101 by default.
         
-        SCORE_THRESH_TEST: The model will keep the prediction result with the score >= SCORE_THRESH_TEST, always 0.5 - 0.7
+        SCORE_THRESH_TEST: The model will keep the prediction result with the score >= SCORE_THRESH_TEST, always 0.5 - 0.7.
 
 setup(args): 
-    It will config the model using the given parameters in the ARGS object. If there the MODEL_DIR exists or was given but MODEL_CKPT doesn't exists or given, then it will use the final model in the MODEL_DIR.If neither the MODEL_DIR nor MODEL_CKPT exists or was given then it will use the pretrained model with the given backbone
+    It will config the model using the given parameters in the ARGS object. If there the MODEL_DIR exists or was given but MODEL_CKPT doesn't exists or given, then it will use the final model in the MODEL_DIR.If neither the MODEL_DIR nor MODEL_CKPT exists or was given then it will use the pretrained model with the given backbone.
 
 Image_Prediction(args,file_name): 
     To do the prediction on a given file, the output image will be stored in the current path with the original filename + _pred and _pred_mask suffix, the return will be the prediction results. 
     
     parameters:
-    args     : the ARGS object for config the model
-    
-    file_name：the image path and name which you want do the prediction on
+        args     : the ARGS object for config the model.
+
+        file_name：the image path and name which you want do the prediction on.
 
 Video_Prediction(args,file_name): 
     Do the prediction on the video.
      
     parameters:
-    args     : the ARGS object for config the model
-    
-    file_name：the video path and name which you want do the prediction on
+        args     : the ARGS object for config the model.
+
+        file_name：the video path and name which you want do the prediction on.
     
 transform
 ----------------------------------
@@ -94,37 +135,37 @@ c(img):
     Transform a img from BGR to RGB.
     
     parameters:
-        img: a read in image in the BGR format
+        img: a read in image in the BGR format.
     
 automatic_brightness_and_contrast(image, clip_hist_percent): 
     The function automatically changed brightness and contrast of a given image.
     
     parameters:
-        img              : a readin image
+        img              : a readin image.
         
-        clip_hist_percent: the parameter which control how much will be clip in the hist of original image's grayscale histogram, 10 by default   
+        clip_hist_percent: the parameter which control how much will be clip in the hist of original image's grayscale histogram, 10 by default.   
 
 brighter_CLAHE(img,clipLimit,tileGridSize): 
     The function apply the CLAHE on a given image.
     
     parameters:
-        clipLimit,tileGridSize: the main parameters which should be given when apply the CLAHE
+        clipLimit,tileGridSize: the main parameters which should be given when apply the CLAHE.
         
-        clipLimit         : float, 3.0 by default
+        clipLimit         : float, 3.0 by default.
         
-        tileGridSize      : 1*2 tuple
+        tileGridSize      : 1*2 tuple.
 
 brightening_dataset(brightening_func,image_root,tar_folder,para = None):
     Do the transformation using the brightening_func on a given dataset.
     
     parameters:
-        brightening_func: the brighten function's name
+        brightening_func: the brighten function's name.
         
-        image_root      : the images path which store all images of the dataset
+        image_root      : the images path which store all images of the dataset.
         
-        tar_folder      : the path which the transformed images should be stored in
+        tar_folder      : the path which the transformed images should be stored in.
         
-        para            : the first parameter for brightening_func, because here we only define two functions brighter_CLAHE and automatic_brightness_and_contrast both with the default parameter, for further using, we can modify this parameter for more complex transformation
+        para            : the first parameter for brightening_func, because here we only define two functions brighter_CLAHE and automatic_brightness_and_contrast both with the default parameter, for further using, we can modify this parameter for more complex transformation.
           
 visualize
 ----------------------------------
@@ -134,8 +175,8 @@ coco_json_show(json_file,image_path,image_name=None):
     Given the path of json_file and images' path, random show 5 images with its annotations in the coco json file. If given a image_name, then only show that image.
         
     parameters:
-        json_file: the path of the json
+        json_file: the path of the json.
         
-        image_path: the path contain the images in the json
+        image_path: the path contain the images in the json.
         
-        image_name: a certain file name, if given will only show this image
+        image_name: a certain file name, if given will only show this image.
