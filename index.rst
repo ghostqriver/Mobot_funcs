@@ -4,7 +4,8 @@ This is the documentation file for the Mobot project, it contains 5 modules in t
 
 train
 ----------------------------------
-``train.py``This file contains the functions for the model training, set the metadata which is the dataset will be used for train and validate your self before do the training please.
+``train.py``
+This file contains the functions for the model training, set the metadata which is the dataset will be used for train and validate your self before do the training please.
 
 ARGS: 
     The model parameters for setup should give to the train functions.
