@@ -1,6 +1,6 @@
 Tutorials
 ======================================
-This is the documentation file for the Mobot project, it contains 5 modules in total. As the project is updated, the content of this document will be continuously supplemented. For the examples on how to use the Mobot_funcs functions you can read the `example notebook <https://github.com/ghostqriver/Mobot_funcs/blob/main/Mobot_example.ipynb>`
+This is the documentation file for the Mobot project, it contains 5 modules in total. As the project is updated, the content of this document will be continuously supplemented. For the examples on how to use the Mobot_funcs functions you can read the `example notebook <https://github.com/ghostqriver/Mobot_funcs/blob/main/Mobot_example.ipynb/>`_.
 
 train
 ----------------------------------
