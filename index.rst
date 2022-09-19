@@ -9,6 +9,7 @@ This file contains the functions for the model training, set the metadata which 
 
 ARGS: 
     The model parameters for setup should give to the train functions.
+    
     parameters:
         MODEL_DIR         : the directory path which stores the model which you start the training with, if None it will start with a pretrained model.
         
@@ -29,7 +30,8 @@ ARGS:
         resume            : resume the last time training or not, default False.
 
 train(args,score_file_name,lr_strategy,min_lr,max_lr,Aug,Train_Set,Test_Set): 
-    Do the training
+    Do the training.
+    
     parameters:
         args            : the ARGS object for training, declare by train.ARGS().
         
