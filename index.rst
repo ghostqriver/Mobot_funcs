@@ -1,10 +1,15 @@
 Tutorials
 ======================================
+This is the documentation file for the Mobot project, it contains 5 modules in total.
 
-.. toctree::
-   :maxdepth: 2
-      transform
-      visualize
-      test
-      train
-      prediction
+train :doc: `/train`.
+----------------------------------
+test
+----------------------------------
+prediction
+----------------------------------
+transform
+----------------------------------
+visualize
+----------------------------------
+
