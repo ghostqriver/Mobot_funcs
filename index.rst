@@ -52,7 +52,28 @@ c(img):
     Transform a img from BGR to RGB
     parameters:
         img: a read in image in the BGR format
+    
+automatic_brightness_and_contrast(image, clip_hist_percent): 
+    The function automatically changed brightness and contrast of a given image
+    parameters:
+        img              : a readin image
+        clip_hist_percent: the parameter which control how much will be clip in the hist of original image's grayscale histogram, 10 by default   
 
+brighter_CLAHE(img,clipLimit,tileGridSize): 
+    The function apply the CLAHE on a given image
+    parameters:
+        clipLimit,tileGridSize: the main parameters which should be given when apply the CLAHE, 
+            clipLimit         : float, 3.0 by
+            tileGridSize      : 1*2 tuple
+
+brightening_dataset(brightening_func,image_root,tar_folder,para = None):
+    Do the transformation using the brightening_func on a given dataset.
+    parameters:
+        brightening_func: the brighten function's name
+        image_root      : the images path which store all images of the dataset
+        tar_folder      : the path which the transformed images should be stored in
+        para            : the first parameter for brightening_func, because here we only define two functions brighter_CLAHE and automatic_brightness_and_contrast both with the default parameter, for further using, we can modify this parameter for more complex transformation
+          
 visualize
 ----------------------------------
 ``visualize.py``
