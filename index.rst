@@ -47,7 +47,34 @@ test_candidate(metadata,candidate_dir):
 prediction
 ----------------------------------
 ``prediction.py``
+This file contains some functions for predict use the model.
 
+ARGS: 
+    Arguments for setting up the model.
+     
+    parameters:
+        MODEL_DIR        : the folder under the current path which store the best model, I will always upload the best model in this folder
+        MODEL_CKPT       : the model's name which was named by its checkpoints, in the best_model folder, the model is eg. model_0012499.pth
+        BACKBONE         : We are using the Mask_RCNN 101 by default
+        SCORE_THRESH_TEST: The model will keep the prediction result with the score >= SCORE_THRESH_TEST, always 0.5 - 0.7
+
+setup(args): 
+    It will config the model using the given parameters in the ARGS object. If there the MODEL_DIR exists or was given but MODEL_CKPT doesn't exists or given, then it will use the final model in the MODEL_DIR.If neither the MODEL_DIR nor MODEL_CKPT exists or was given then it will use the pretrained model with the given backbone
+
+Image_Prediction(args,file_name): 
+    To do the prediction on a given file, the output image will be stored in the current path with the original filename + _pred and _pred_mask suffix, the return will be the prediction results. 
+    
+    parameters:
+    args     : the ARGS object for config the model
+    file_name：the image path and name which you want do the prediction on
+
+Video_Prediction(args,file_name): 
+    Do the prediction on the video.
+     
+    parameters:
+    args     : the ARGS object for config the model
+    file_name：the video path and name which you want do the prediction on
+    
 transform
 ----------------------------------
 ``transform.py``
