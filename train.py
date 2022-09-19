@@ -1,3 +1,31 @@
+'''
+This file contains the functions for the model training, set the metadata which is the dataset will be used for train and validate your self before do the training please.
+
+ARGS: The model parameters for setup should give to the train functions.
+    MODEL_DIR         : the directory path which stores the model which you start the training with, if None it will start with a pretrained model
+    OUTPUT_DIR        : the directory path which you wan to store the train results
+    BASE_LR           : the basic learning rate when you didn't set any learning rate strategy, if use the strategy, then this parameter won't work
+    MAX_ITER          : the training will start with the iteration which the start model last time end with, the MAX_ITER will be how many iterations this training
+    CHECKPOINT_PERIOD : how many iterations it save the model as a CHECKPOINT, should be same to the EVAL_PERIOD for choosing the best model
+    EVAL_PERIOD       : how many iterations it do the valiadation, should be same to the CHECKPOINT_PERIOD for choosing the best model
+    MODEL_CKPT        : the model checkpoint's file name (eg. model_0010499.pth --> use model_0010499)
+    BACKBONE          : the BACKBONE we are using, default value is "COCO-InstanceSegmentation/mask_rcnn_R_101_FPN_3x.yaml" 
+    resume            : resume the last time training or not, default False
+
+train(args,score_file_name,lr_strategy,min_lr,max_lr,Aug,Train_Set,Test_Set): Do the training
+    args            : the ARGS object for training, declare by train.ARGS()
+    score_file_name : the npy file's name which will be saved in output dir contain the score list, default {}.npy
+    lr_strategy     : if 1 use gen_lr_list_1, if 2 use gen_lr_list_2, if 3 use gen_lr_list_choosing_lr(plz meanwhile set a small CHECKPOINT_PERIOD and EVAL_PERIOD), if None use the BASE_LR and detectron2's default warmup scheduler
+    min_lr          : if use learning rate strategy, otherwise set it to None
+    max_lr          : if use learning rate strategy, otherwise set it to None 
+    Aug             : set True to open the Augmentation we defined
+    Train_Set       : should be defined with detectron2.data.MetadataCatalog.get() function which contain the at least json_file and image_root informations for the training set
+    Test_Set        : should be defined with detectron2.data.MetadataCatalog.get() function which contain the at least json_file and image_root informations for the validation set
+
+'''
+
+
+from importlib.metadata import metadata
 import detectron2
 from detectron2.utils.logger import setup_logger
 setup_logger()
@@ -59,14 +87,25 @@ import math
 logger = logging.getLogger("detectron2")
 
 
-
-
 class ARGS:
+    '''
+    The model parameters for setup should give to the train functions.
+    MODEL_DIR         : the directory path which stores the model which you start the training with, if None it will start with a pretrained model
+    OUTPUT_DIR        : the directory path which you wan to store the train results
+    BASE_LR           : the basic learning rate when you didn't set any learning rate strategy, if use the strategy, then this parameter won't work
+    MAX_ITER          : the training will start with the iteration which the start model last time end with, the MAX_ITER will be how many iterations this training
+    CHECKPOINT_PERIOD : how many iterations it save the model as a CHECKPOINT, should be same to the EVAL_PERIOD for choosing the best model
+    EVAL_PERIOD       : how many iterations it do the valiadation, should be same to the CHECKPOINT_PERIOD for choosing the best model
+    MODEL_CKPT        : the model checkpoint's file name (eg. model_0010499.pth --> use model_0010499)
+    BACKBONE          : the BACKBONE we are using, default value is "COCO-InstanceSegmentation/mask_rcnn_R_101_FPN_3x.yaml" 
+    resume            : resume the last time training or not, default False
+    
+    '''
     def __init__(
-            self, MODEL_DIR, OUTPUT_DIR, BASE_LR, MAX_ITER, STEPS,
-            CHECKPOINT_PERIOD, EVAL_PERIOD,
+            self, MODEL_DIR, OUTPUT_DIR, BASE_LR, MAX_ITER, 
+            CHECKPOINT_PERIOD, EVAL_PERIOD, STEPS=[],
             MODEL_CKPT=None, BACKBONE="COCO-InstanceSegmentation/mask_rcnn_R_101_FPN_3x.yaml",
-            resume=False, ):
+            resume=False):
         self.MODEL_DIR,self.OUTPUT_DIR = MODEL_DIR,OUTPUT_DIR
         self.BASE_LR,self.MAX_ITER = BASE_LR,MAX_ITER
         self.STEPS = STEPS
@@ -75,6 +114,7 @@ class ARGS:
         self.MODEL_CKPT = MODEL_CKPT
         self.BACKBONE = BACKBONE
         self.resume=resume
+
 
 def setup(args):
     cfg = get_cfg()
@@ -93,8 +133,8 @@ def setup(args):
         print("Apply pre-trained "+args.BACKBONE+" model")
 
     # cfg.DATASETS.TRAIN = ("MOBOT_SampleDataset",)    
-    cfg.DATASETS.TRAIN = ("MOBOT_Train",)
-    cfg.DATASETS.TEST = ("MOBOT_Val",)
+    # cfg.DATASETS.TRAIN = args.Train_Set
+    # cfg.DATASETS.TEST = args.Test_Set
     
     
     cfg.SOLVER.IMS_PER_BATCH = 3  # This is the real "batch size" commonly known to deep learning people 每个batch有几张图像
@@ -196,6 +236,7 @@ def gen_lr_list_1(cfg,start,min_lr,max_lr):
     plt.title('Learning Rate')
     plt.show()
     return lr_list
+
 
 def gen_lr_list_2(cfg,start,min_lr = 5e-06,max_lr = 0.000298):#lr2
     
@@ -371,8 +412,22 @@ def do_train(cfg, model, file_name, resume = False, lr_strategy = None, min_lr =
     return {'train_loss':train_loss_list,'test_acc':test_acc}
 
 
-def train(args,score_file_name = '{}',lr_strategy=None,min_lr=None, max_lr=None, Aug=False):
+def train(args,score_file_name = '{}',lr_strategy=None,min_lr=None, max_lr=None, Aug=False,Train_Set=metadata_train,Test_Set=metadata_test):
+    '''
+    Do the training
+    args            : the ARGS object for training, declare by train.ARGS()
+    score_file_name : the npy file's name which will be saved in output dir contain the score list, default {}.npy
+    lr_strategy     : if 1 use gen_lr_list_1, if 2 use gen_lr_list_2, if 3 use gen_lr_list_choosing_lr(plz meanwhile set a small CHECKPOINT_PERIOD and EVAL_PERIOD), if None use the BASE_LR and detectron2's default warmup scheduler
+    min_lr          : if use learning rate strategy, otherwise set it to None
+    max_lr          : if use learning rate strategy, otherwise set it to None 
+    Aug             : set True to open the Augmentation we defined
+    Train_Set       : should be defined with detectron2.data.MetadataCatalog.get() function which contain the at least json_file and image_root informations for the training set
+    Test_Set        : should be defined with detectron2.data.MetadataCatalog.get() function which contain the at least json_file and image_root informations for the validation set
+    '''
     cfg = setup(args)
+    # Train_Set=("MOBOT_Train",),Test_Set=("MOBOT_Val",)
+    cfg.DATASETS.TRAIN = (Train_Set.name,)
+    cfg.DATASETS.TEST = (Test_Set.name,)
 
     model = build_model(cfg)
     

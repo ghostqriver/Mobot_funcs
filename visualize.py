@@ -1,3 +1,12 @@
+'''
+This file is used for visualizzation for checking whether the current augmentation or coco json file works or not.
+
+coco_json_show(json_file,image_path,image_name=None): Given the path of json_file and images' path, random show 5 images with its annotations in the coco json file. If given a image_name, then only show that image.
+        json_file: the path of the json
+        image_path: the path contain the images in the json
+        image_name: a certain file name, if given will only show this image
+'''
+
 import skimage.io as io
 import matplotlib.pyplot as plt
 import cv2
@@ -8,8 +17,11 @@ import random
 def coco_json_show(json_file,image_path,image_name=None):
     
     '''
-    Given the path of json_file and images' path, random show 5 images with its annotations in the coco json file.
-    If given a image_name, then only show that image.
+    Given the path of json_file and images' path, random show 5 images with its annotations in the coco json file. If given a image_name, then only show that image.
+    json_file: the path of the json
+    image_path: the path contain the images in the json
+    image_name: a certain file name, if given will only show this image
+
     '''
 
     coco = COCO(json_file)

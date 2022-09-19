@@ -1,3 +1,26 @@
+'''
+This file contain the functions which can be used in the image transformations and iteratively changed whole dataset using a transformation function
+
+c(img): Transform a img from BGR to RGB
+    img: a read in image in the BGR format
+    
+automatic_brightness_and_contrast(image, clip_hist_percent): The function automatically changed brightness and contrast of a given image
+    img              : a readin image
+    clip_hist_percent: the parameter which control how much will be clip in the hist of original image's grayscale histogram, 10 by default   
+
+brighter_CLAHE(img,clipLimit,tileGridSize): The function apply the CLAHE on a given image
+    clipLimit,tileGridSize: the main parameters which should be given when apply the CLAHE, 
+        clipLimit         : float, 3.0 by
+        tileGridSize      : 1*2 tuple
+
+brightening_dataset(brightening_func,image_root,tar_folder,para = None): Do the transformation using the brightening_func on a given dataset.
+    brightening_func: the brighten function's name
+    image_root      : the images path which store all images of the dataset
+    tar_folder      : the path which the transformed images should be stored in
+    para            : the first parameter for brightening_func, because here we only define two functions brighter_CLAHE and automatic_brightness_and_contrast both with the default parameter, for further using, we can modify this parameter for more complex transformation
+          
+'''
+
 import cv2
 import numpy as np
 import random
@@ -6,9 +29,19 @@ import matplotlib.pyplot as plt
 import glob
 
 def c(img): 
+    '''
+    Transform a img from BGR to RGB
+    img: a readin image in the BGR format
+    '''
     return img[:,:,[2,1,0]]
     
 def automatic_brightness_and_contrast(image, clip_hist_percent=10):
+    '''
+    The function automatically changed brightness and contrast of a given image
+    img: a readin image
+    clip_hist_percent: the parameter which control how much will be clip in the hist of original image's grayscale histogram, 10 by default
+    
+    '''
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
     # Calculate grayscale histogram
@@ -53,7 +86,13 @@ def automatic_brightness_and_contrast(image, clip_hist_percent=10):
     return auto_result
 
 def brighter_CLAHE(img,clipLimit=3.0,tileGridSize=(8,8)):
-    
+    '''
+    The function apply the CLAHE on a given image
+    clipLimit,tileGridSize: the main parameters which should be given when apply the CLAHE, 
+        clipLimit: float, 3.0 by
+        tileGridSize: 1*2 tuple
+        
+    '''
     lab= cv2.cvtColor(img, cv2.COLOR_BGR2LAB,)
     l_channel, a, b = cv2.split(lab)
 
@@ -71,7 +110,14 @@ def brighter_CLAHE(img,clipLimit=3.0,tileGridSize=(8,8)):
     return enhanced_img
 
 def brightening_dataset(brightening_func,image_root,tar_folder,para = None):
-    
+    '''
+    Do the transformation using the brightening_func on a given dataset.
+    brightening_func: the brighten function's name
+    image_root      : the images path which store all images of the dataset
+    tar_folder      : the path which the transformed images should be stored in
+    para            : the first parameter for brightening_func, because here we only define two functions brighter_CLAHE and automatic_brightness_and_contrast both with the default parameter, for further using, we can modify this parameter for more complex transformation
+   
+   '''
     if not os.path.exists(tar_folder):
         os.mkdir(tar_folder) 
     
