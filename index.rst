@@ -13,6 +13,7 @@ This file contains some functions for test the model, set the metadata which is 
 
 ARGS: 
     The model parameters for setup should give to the test functions.
+    
     parameters:
         MODEL_DIR         : the directory path which stores the model
         OUTPUT_DIR        : the directory path which you wan to store the test result 
@@ -24,18 +25,21 @@ setup(args):
     It will config the model using the given parameters in the ARGS object. If there the MODEL_DIR exists or was given but MODEL_CKPT doesn't exists or given, then it     will use the final model in the MODEL_DIR.If neither the MODEL_DIR nor MODEL_CKPT exists or was given then it will use the pretrained model with the given backbone
 
 get_best_model(dir): 
-    Return the best model's name which saved in the ../Mobot/best_model or a given directory, only works when there is one .pth file in a certain length path, for some     complex path please set the model name yourself
+    Return the best model's name which saved in the ../Mobot/best_model or a given directory, only works when there is one .pth file in a certain length path, for some     complex path please set the model name yourself.
+    
     parameters:
     dir : the directory path which only store one model.pth file which should be the best model
 
 test(args,metadata): 
     Do the test use the given model (args) on the given dataset (metadata), will return a score_list contain the scores results.
+    
     parameters:
         args    : the ARGS object
         metadata: should be defined with detectron2.data.MetadataCatalog.get() function which contain the at least json_file and image_root informations
 
 test_candidate(metadata,candidate_dir): 
     The function will read the .pth file in the candidate_dir (default:best_model/candidate_model) folder automatically, and use the given dataset in metadata to get the result score, it will return a score list, also show the score table, when the model path is complex then this function can not work maybe, then define your owns model pred iteration please.
+    
     parameters:
         metadata     : should be defined with detectron2.data.MetadataCatalog.get() function which contain the at least json_file and image_root informations
         candidate_dir: the path which all models in it are the candidate models you want to test
@@ -49,18 +53,21 @@ transform
 ``transform.py``
 
 c(img): 
-    Transform a img from BGR to RGB
+    Transform a img from BGR to RGB.
+    
     parameters:
         img: a read in image in the BGR format
     
 automatic_brightness_and_contrast(image, clip_hist_percent): 
-    The function automatically changed brightness and contrast of a given image
+    The function automatically changed brightness and contrast of a given image.
+    
     parameters:
         img              : a readin image
         clip_hist_percent: the parameter which control how much will be clip in the hist of original image's grayscale histogram, 10 by default   
 
 brighter_CLAHE(img,clipLimit,tileGridSize): 
-    The function apply the CLAHE on a given image
+    The function apply the CLAHE on a given image.
+    
     parameters:
         clipLimit,tileGridSize: the main parameters which should be given when apply the CLAHE, 
             clipLimit         : float, 3.0 by
@@ -68,6 +75,7 @@ brighter_CLAHE(img,clipLimit,tileGridSize):
 
 brightening_dataset(brightening_func,image_root,tar_folder,para = None):
     Do the transformation using the brightening_func on a given dataset.
+    
     parameters:
         brightening_func: the brighten function's name
         image_root      : the images path which store all images of the dataset
