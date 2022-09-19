@@ -28,7 +28,7 @@ get_best_model(dir):
     Return the best model's name which saved in the ../Mobot/best_model or a given directory, only works when there is one .pth file in a certain length path, for some     complex path please set the model name yourself.
     
     parameters:
-    dir : the directory path which only store one model.pth file which should be the best model
+        dir : the directory path which only store one model.pth file which should be the best model
 
 test(args,metadata): 
     Do the test use the given model (args) on the given dataset (metadata), will return a score_list contain the scores results.
