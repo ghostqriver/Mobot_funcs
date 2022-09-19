@@ -16,9 +16,13 @@ ARGS:
     
     parameters:
         MODEL_DIR         : the directory path which stores the model
+        
         OUTPUT_DIR        : the directory path which you wan to store the test result 
+        
         MODEL_CKPT        : the model checkpoint's file name (eg. model_0010499.pth --> use model_0010499)
+        
         BACKBONE          : the BACKBONE we are using, default value is "COCO-InstanceSegmentation/mask_rcnn_R_101_FPN_3x.yaml" 
+        
         SCORE_THRESH_TEST : the prediction with a confidence score above the threshold value is kept, and the remaining are discarded, 0.7 by default
 
 setup(args): 
@@ -35,6 +39,7 @@ test(args,metadata):
     
     parameters:
         args    : the ARGS object
+        
         metadata: should be defined with detectron2.data.MetadataCatalog.get() function which contain the at least json_file and image_root informations
 
 test_candidate(metadata,candidate_dir): 
@@ -42,6 +47,7 @@ test_candidate(metadata,candidate_dir):
     
     parameters:
         metadata     : should be defined with detectron2.data.MetadataCatalog.get() function which contain the at least json_file and image_root informations
+        
         candidate_dir: the path which all models in it are the candidate models you want to test
 
 prediction
@@ -54,8 +60,11 @@ ARGS:
      
     parameters:
         MODEL_DIR        : the folder under the current path which store the best model, I will always upload the best model in this folder
+        
         MODEL_CKPT       : the model's name which was named by its checkpoints, in the best_model folder, the model is eg. model_0012499.pth
+        
         BACKBONE         : We are using the Mask_RCNN 101 by default
+        
         SCORE_THRESH_TEST: The model will keep the prediction result with the score >= SCORE_THRESH_TEST, always 0.5 - 0.7
 
 setup(args): 
@@ -66,6 +75,7 @@ Image_Prediction(args,file_name):
     
     parameters:
     args     : the ARGS object for config the model
+    
     file_name：the image path and name which you want do the prediction on
 
 Video_Prediction(args,file_name): 
@@ -73,6 +83,7 @@ Video_Prediction(args,file_name):
      
     parameters:
     args     : the ARGS object for config the model
+    
     file_name：the video path and name which you want do the prediction on
     
 transform
@@ -90,25 +101,41 @@ automatic_brightness_and_contrast(image, clip_hist_percent):
     
     parameters:
         img              : a readin image
+        
         clip_hist_percent: the parameter which control how much will be clip in the hist of original image's grayscale histogram, 10 by default   
 
 brighter_CLAHE(img,clipLimit,tileGridSize): 
     The function apply the CLAHE on a given image.
     
     parameters:
-        clipLimit,tileGridSize: the main parameters which should be given when apply the CLAHE, 
-            clipLimit         : float, 3.0 by
-            tileGridSize      : 1*2 tuple
+        clipLimit,tileGridSize: the main parameters which should be given when apply the CLAHE
+        
+        clipLimit         : float, 3.0 by default
+        
+        tileGridSize      : 1*2 tuple
 
 brightening_dataset(brightening_func,image_root,tar_folder,para = None):
     Do the transformation using the brightening_func on a given dataset.
     
     parameters:
         brightening_func: the brighten function's name
+        
         image_root      : the images path which store all images of the dataset
+        
         tar_folder      : the path which the transformed images should be stored in
+        
         para            : the first parameter for brightening_func, because here we only define two functions brighter_CLAHE and automatic_brightness_and_contrast both with the default parameter, for further using, we can modify this parameter for more complex transformation
           
 visualize
 ----------------------------------
-``visualize.py``
+``visualize.py`` This file is used for visualizzation for checking whether the current augmentation or coco json file works or not.
+
+coco_json_show(json_file,image_path,image_name=None): 
+    Given the path of json_file and images' path, random show 5 images with its annotations in the coco json file. If given a image_name, then only show that image.
+        
+    parameters:
+        json_file: the path of the json
+        
+        image_path: the path contain the images in the json
+        
+        image_name: a certain file name, if given will only show this image
