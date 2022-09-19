@@ -1,5 +1,10 @@
-transform
-visualize
-test
-train
-prediction
+Tutorials
+======================================
+
+.. toctree::
+   :maxdepth: 2
+      transform
+      visualize
+      test
+      train
+      prediction
